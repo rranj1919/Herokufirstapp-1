@@ -9,7 +9,7 @@ const getAll = async (req, res) => {
     // Try get data from db
     try {
         const client = await pool.connect();
-        const result = await client.query('SELECT * FROM salesforce.case');
+        const result = await client.query('SELECT * FROM salesforce.Dummy_Case__c');
         client.release();
 
         return res.status(200).json(result.rows);

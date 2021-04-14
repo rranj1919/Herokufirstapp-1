@@ -10,8 +10,14 @@ app.get("/", (req, res) => {
 });
 
 // Get all rows from the table test_table
-router.get('/test_table', routes.test.getAll);
+router.get('/getAllTables', routes.routeController.getAll);
 
-app.use('/api', router);
+// Dynamically get specific table
+router.get('/get/:table', routes.routeController.getSpecificTable);
+
+// Dynamically get specific table and record
+router.get('/get/:table/:id', routes.routeController.getSpecificRecord);
+
+app.use('/api/v1', router);
 
 app.listen(PORT, () => console.log(`Server is listening on ${PORT}`));

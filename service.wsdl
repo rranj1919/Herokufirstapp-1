@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="SoapService" targetNamespace="https://salesforce-heroku-datasync.herokuapp.com/api/soap" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="https://salesforce-heroku-datasync.herokuapp.com/api/soap" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <message name="GetTableRequest">
+        <part name="request" type="xsd:string" />
+    </message>
+    <message name="GetTableResponse">
+        <part name="response" type="xsd:string" />
+    </message>
+
+    <portType name="SoapPort">
+        <operation name="GetTable">
+            <input message="tns:GetTableRequest" />
+            <output message="tns:GetTableResponse" />
+        </operation>
+    </portType>
+
+    <binding name="GetTable_Binding" type="tns:SoapPort">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="GetTable">
+            <soap:operation soapAction="GetTable" />
+            <input>
+                <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:SoapService" use="encoded" />
+            </input>
+            <output>
+                <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:SoapService" use="encoded" />
+            </output>
+        </operation>
+    </binding>
+
+    <service name="SoapService">
+        <documentation>WSDL File for SOAP Service</documentation>
+        <port binding="tns:GetTable_Binding" name="SoapPort">
+            <soap:address location="https://salesforce-heroku-datasync.herokuapp.com/GetTable/" />
+        </port>
+    </service>
+
+</definitions>

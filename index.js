@@ -83,6 +83,8 @@ const getAllTables = async (args, cb, headers) => {
     // Try get data from DB
     try {
         // Get all table names
+        // Change table_schema='salesforce' to other schema to show that specific schema
+        // Or remove it to show all
         console.log('Getting all tables');
         const tableQuery = await client.query(`SELECT table_name
                                             FROM information_schema.tables
@@ -92,7 +94,7 @@ const getAllTables = async (args, cb, headers) => {
 
         console.log('Table Array: ', tableArray);
 
-        /* 
+        
         // Loop through all tables and query them - save in results obj
         results = {};
         for(const table of tableArray) {
@@ -101,7 +103,7 @@ const getAllTables = async (args, cb, headers) => {
             results[table.table_name] = result.rows;
         };
 
-        
+        /* 
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
         var i;
         for(i = 0; i < 2; i++) {
@@ -109,14 +111,14 @@ const getAllTables = async (args, cb, headers) => {
             let result = await client.query(`SELECT * FROM ${tableArray[i].table_name}`)
             results[tableArray[i].table_name] = result.rows;
         }
-        
+        */
 
         client.release();
 
         return {
             results
         }
-        */
+        
     } catch (err) {
         console.error(err);
         return {

@@ -1,26 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions name="SoapService" targetNamespace="https://salesforce-heroku-datasync.herokuapp.com/api/soap" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="https://salesforce-heroku-datasync.herokuapp.com/api/soap" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-    <message name="GetTableRequest">
+    <message name="GetTableByNameRequest">
         <part name="request" type="xsd:string" />
     </message>
-    <message name="GetTableResponse">
+    <message name="GetTableByNameResponse">
+        <part name="response" type="xsd:string" />
+    </message>
+
+    <message name="GetAllTablesRequest">
+        <part name="request" type="xsd:string" />
+    </message>
+    <message name="GetAllTablesResponse">
         <part name="response" type="xsd:string" />
     </message>
 
     <portType name="SoapPort">
-        <operation name="GetTable">
-            <input message="tns:GetTableRequest" />
-            <output message="tns:GetTableResponse" />
+        <operation name="GetTableByName">
+            <input message="tns:GetTableByNameRequest" />
+            <output message="tns:GetTableByNameResponse" />
+        </operation>
+        <operation name="GetAllTables">
+            <input message="tns:GetAllTablesRequest" />
+            <output message="tns:GetAllTablesResponse" />
         </operation>
     </portType>
 
-    <binding name="GetTable_Binding" type="tns:SoapPort">
+    <binding name="GetTableByName_Binding" type="tns:SoapPort">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
-        <operation name="GetTable">
-            <soap:operation soapAction="GetTable" />
+        <operation name="GetTableByName">
+            <soap:operation soapAction="GetTableByName" />
             <input>
                 <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:SoapService" use="encoded" />
+                <soap:header message="tns:Headers" part="Token" use="literal" />
+            </input>
+            <output>
+                <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:SoapService" use="encoded" />
+            </output>
+        </operation>
+    </binding>
+
+    <binding name="GetAllTables_Binding" type="tns:SoapPort">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="GetAllTables">
+            <soap:operation soapAction="GetAllTables" />
+            <input>
+                <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:SoapService" use="encoded" />
+                <soap:header message="tns:Headers" part="Token" use="literal" />
             </input>
             <output>
                 <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:SoapService" use="encoded" />
@@ -30,8 +56,11 @@
 
     <service name="SoapService">
         <documentation>WSDL File for SOAP Service</documentation>
-        <port binding="tns:GetTable_Binding" name="SoapPort">
-            <soap:address location="https://salesforce-heroku-datasync.herokuapp.com/GetTable/" />
+        <port binding="tns:GetTableByName_Binding" name="SoapPort">
+            <soap:address location="https://salesforce-heroku-datasync.herokuapp.com/api/soap" />
+        </port>
+        <port binding="tns:GetAllTables_Binding" name="SoapPort">
+            <soap:address location="https://salesforce-heroku-datasync.herokuapp.com/api/soap" />
         </port>
     </service>
 

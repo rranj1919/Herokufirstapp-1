@@ -94,9 +94,9 @@ const getAllTables = async (args, cb, headers) => {
 
         console.log('Table Array: ', tableArray);
 
+        results = {};
         /* 
         // Loop through all tables and query them - save in results obj
-        results = {};
         for(const table of tableArray) {
             console.log('Querying table: ', table.table_name);
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)

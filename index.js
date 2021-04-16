@@ -90,6 +90,8 @@ const getAllTables = async (args, cb, headers) => {
                                             AND table_type='BASE TABLE'`);
         const tableArray = tableQuery.rows;
 
+        console.log('Table Array: ', tableArray);
+
         // Loop through all tables and query them - save in results obj
         results = {};
         for(const table of tableArray) {

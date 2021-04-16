@@ -86,7 +86,8 @@ const getAllTables = async (args, cb, headers) => {
         console.log('Getting all tables');
         const tableQuery = await client.query(`SELECT table_name
                                             FROM information_schema.tables
-                                            WHERE table_type='BASE TABLE'`);
+                                            WHERE table_schema='public'
+                                            AND table_type='BASE TABLE'`);
         const tableArray = tableQuery.rows;
 
         console.log('Table Array: ', tableArray);

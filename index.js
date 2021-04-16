@@ -85,13 +85,12 @@ const getAllTables = async (args, cb, headers) => {
         // Get all table names
         console.log('Getting all tables');
         const tableQuery = await client.query(`SELECT table_name
-                                            FROM information_schema.tables
-                                            WHERE table_schema='public'
-                                            AND table_type='BASE TABLE'`);
+                                            FROM information_schema.tables`);
         const tableArray = tableQuery.rows;
 
         console.log('Table Array: ', tableArray);
 
+        /* 
         // Loop through all tables and query them - save in results obj
         results = {};
         for(const table of tableArray) {
@@ -100,7 +99,7 @@ const getAllTables = async (args, cb, headers) => {
             results[table.table_name] = result.rows;
         };
 
-        /* 
+        
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
         var i;
         for(i = 0; i < 2; i++) {
@@ -108,13 +107,14 @@ const getAllTables = async (args, cb, headers) => {
             let result = await client.query(`SELECT * FROM ${tableArray[i].table_name}`)
             results[tableArray[i].table_name] = result.rows;
         }
-        */
+        
 
         client.release();
 
         return {
             results
         }
+        */
     } catch (err) {
         console.error(err);
         return {

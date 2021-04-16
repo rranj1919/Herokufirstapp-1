@@ -86,7 +86,7 @@ const getAllTables = async (args, cb, headers) => {
         console.log('Getting all tables');
         const tableQuery = await client.query(`SELECT table_name
                                             FROM information_schema.tables
-                                            WHERE table_schema='public'
+                                            WHERE table_schema='salesforce'
                                             AND table_type='BASE TABLE'`);
         const tableArray = tableQuery.rows;
 

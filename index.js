@@ -18,7 +18,7 @@ const getTableByName = async (args, cb, headers) => {
         if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USERNAME) {
             console.log('Unauthorized request');
                 return {
-                    error: 'Unauthorized User'
+                    error: 'Unauthorized'
                 }
         }
 

@@ -7,7 +7,7 @@ module.exports = function(req, res, next) {
 
     console.log('Auth header: ', req.header('Authorization'))
 
-    const buff = Buffer.from(base64, 'base64');
+    const buff = Buffer.from(req.header('Authorization'), 'base64');
     const authStr = buff.toString('utf-8');
     console.log('Decoded: ', authStr);
 

@@ -5,8 +5,6 @@ const router = express.Router();
 const auth = require('./auth');
 const { pool } = require('./config');
 
-const PORT = process.env.PORT || 5000;
-
 // Read the WSDL file
 const xml = require('fs').readFileSync('service.wsdl', 'utf8');
 
@@ -18,17 +16,17 @@ const getTableByName = async (args, cb, headers) => {
         // Check if username exists
         if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USERNAME) {
             console.log('Unauthorized request');
-                return {
-                    error: 'Unauthorized'
-                }
+            return {
+                error: 'Unauthorized'
+            }
         }
 
-        // Check if password matches
+        // Check if password exists and matches
         if(!headers.Security.UsernameToken.Password['$value'] || headers.Security.UsernameToken.Password['$value'] !== process.env.PASSWORD) {
             console.log('Unauthorized request');
-                return {
-                    error: 'Unauthorized User'
-                }
+            return {
+                error: 'Unauthorized User'
+            }
         }
     } catch(err) {
         // Errors if the authentication headers are not provided
@@ -72,17 +70,17 @@ const getAllTables = async (args, cb, headers) => {
         // Check if username exists
         if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USERNAME) {
             console.log('Unauthorized request');
-                return {
-                    error: 'Unauthorized User'
-                }
+            return {
+                error: 'Unauthorized User'
+            }
         }
 
-        // Check if password matches
+        // Check if password exists and matches
         if(!headers.Security.UsernameToken.Password['$value'] || headers.Security.UsernameToken.Password['$value'] !== process.env.PASSWORD) {
             console.log('Unauthorized request');
-                return {
-                    error: 'Unauthorized User'
-                }
+            return {
+                error: 'Unauthorized User'
+            }
         }
     } catch(err) {
         // Errors if the authentication headers are not provided
@@ -121,11 +119,10 @@ const getAllTables = async (args, cb, headers) => {
         var i;
         for(i = 0; i < 5; i++) {
             console.log('Querying table: ', tableArray[i].table_name);
-            let result = await client.query(`SELECT * FROM salesforce.${tableArray[i].table_name}`)
+            let result = await client.query(`SELECT * FROM salesforce.${tableArray[i].table_name}`);
             results[tableArray[i].table_name] = result.rows;
         }
         
-
         client.release();
 
         return {
@@ -166,7 +163,7 @@ router.get('/get/:tableName', auth, async (req, res) => {
         const results = {
             'table': tableName,
             'result': (result) ? result.rows : null
-        };
+        }
 
         return res.status(200).json(results);
     } catch (err) {
@@ -193,23 +190,23 @@ router.get('/getAllTables', auth, async (req, res) => {
         const tableArray = tableQuery.rows;
 
         results = {};
-        /* 
+         
         // Loop through all tables and query them - save in results obj
         for(const table of tableArray) {
             console.log('Querying table: ', table.table_name);
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
         };
-        */
-
+        
+        /*
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
         var i;
         for(i = 0; i < 5; i++) {
             console.log('Querying table: ', tableArray[i].table_name);
-            let result = await client.query(`SELECT * FROM salesforce.${tableArray[i].table_name}`)
+            let result = await client.query(`SELECT * FROM salesforce.${tableArray[i].table_name}`);
             results[tableArray[i].table_name] = result.rows;
         }
-
+        */
         client.release();
 
         return res.status(200).json(results);
@@ -226,6 +223,8 @@ app.get("/", (req, res) => {
 
 // Setup rest route
 app.use('/api/rest', router);
+
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     // Setup soap route

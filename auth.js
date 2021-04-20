@@ -11,6 +11,9 @@ module.exports = function(req, res, next) {
     const authStr = buff.toString('utf-8');
     console.log('Decoded: ', authStr);
 
+    const splitAuthStr = authStr.split(':');
+    console.log('auth array: ', splitAuthStr);
+
     // Try to check if credentials are correct
     try {
         if(req.header('username') == process.env.USERNAME && req.header('password') == process.env.PASSWORD) {

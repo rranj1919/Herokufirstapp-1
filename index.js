@@ -152,7 +152,7 @@ var soapService = {
 
 // REST SERVICE
 // Get specific table by name
-// Secure Route
+// Secure Route - with auth.js middleware
 router.get('/get/:tableName', auth, async (req, res) => {
     const { tableName } = req.params;
     console.log('TABLE: ', tableName);
@@ -167,6 +167,50 @@ router.get('/get/:tableName', auth, async (req, res) => {
             'table': tableName,
             'result': (result) ? result.rows : null
         };
+
+        return res.status(200).json(results);
+    } catch (err) {
+        console.error(err);
+        res.status(400).send('ERROR: ', err);
+    }
+});
+
+// Get all tables
+// Secure Route - with auth.js middleware
+router.get('/getAllTables', auth, async (req, res) => {
+    const client = await pool.connect();
+
+    // Try get data from db
+    try {
+        // Get all table names
+        // Change table_schema='salesforce' to other schema to show that specific schema
+        // Or remove it to show all
+        console.log('Getting all tables');
+        const tableQuery = await client.query(`SELECT table_name
+                                            FROM information_schema.tables
+                                            WHERE table_schema='salesforce'
+                                            AND table_type='BASE TABLE'`);
+        const tableArray = tableQuery.rows;
+
+        results = {};
+        /* 
+        // Loop through all tables and query them - save in results obj
+        for(const table of tableArray) {
+            console.log('Querying table: ', table.table_name);
+            let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
+            results[table.table_name] = result.rows;
+        };
+        */
+
+        // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
+        var i;
+        for(i = 0; i < 5; i++) {
+            console.log('Querying table: ', tableArray[i].table_name);
+            let result = await client.query(`SELECT * FROM salesforce.${tableArray[i].table_name}`)
+            results[tableArray[i].table_name] = result.rows;
+        }
+
+        client.release();
 
         return res.status(200).json(results);
     } catch (err) {

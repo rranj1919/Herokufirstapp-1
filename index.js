@@ -14,6 +14,8 @@ const getTableByName = async (args, cb, headers) => {
 
     // Deny Unauthorized Requests
     try {
+        console.log('user ', headers.Security.UsernameToken.Username);
+        console.log('pw ', headers.Security.UsernameToken.Password['$value']);
         // Check if username exists
         if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USERNAME) {
             console.log('Unauthorized request');

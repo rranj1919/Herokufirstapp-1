@@ -11,24 +11,30 @@ const xml = require('fs').readFileSync('service.wsdl', 'utf8');
 
 // Get table from postgres DB by table name - used by soap service
 const getTableByName = async (args, cb, headers) => {
-    // Auth header token with process.env.TOKEN from heroku side
-    // i.e. soap message header "Token" must match config var "TOKEN" in heroku
-    /*     
+
+    // Deny Unauthorized Requests
     try {
-        const token = headers.Token;
-        if(!token || token !== process.env.TOKEN) {
+        // Check if username exists
+        if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.Username) {
             console.log('Unauthorized request');
-            return {
-                error: 'Unauthorized'
-            }
+                return {
+                    error: 'Unauthorized User'
+                }
         }
-    } catch (err) {
-        console.log('Unauthorized request');
+
+        // Check if password matches
+        if(!headers.Security.UsernameToken.Password['$value'] || headers.Security.UsernameToken.Password['$value'] !== process.env.Password) {
+            console.log('Unauthorized request');
+                return {
+                    error: 'Unauthorized User'
+                }
+        }
+    } catch(err) {
+        console.error('Authentication Error: ', err);
         return {
-            error: 'Unauthorized'
+            error: 'Authentication Error: ' + err
         }
     }
-    */
 
     // Connect to DB
     const client = await pool.connect();
@@ -58,24 +64,30 @@ const getTableByName = async (args, cb, headers) => {
 
 // Get data from all tables in the heroku postgresql DB - used by soap service
 const getAllTables = async (args, cb, headers) => {
-    // Auth header token with process.env.TOKEN from heroku side
-    // i.e. soap message header "Token" must match config var "TOKEN" in heroku
-    /*     
+
+    // Deny Unauthorized Requests
     try {
-        const token = headers.Token;
-        if(!token || token !== process.env.TOKEN) {
+        // Check if username exists
+        if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USER) {
             console.log('Unauthorized request');
-            return {
-                error: 'Unauthorized'
-            }
+                return {
+                    error: 'Unauthorized User'
+                }
         }
-    } catch (err) {
-        console.log('Unauthorized request');
+
+        // Check if password matches
+        if(!headers.Security.UsernameToken.Password['$value'] || headers.Security.UsernameToken.Password['$value'] !== process.env.KEY) {
+            console.log('Unauthorized request');
+                return {
+                    error: 'Unauthorized User'
+                }
+        }
+    } catch(err) {
+        console.error('Authentication Error: ', err);
         return {
-            error: 'Unauthorized'
+            error: 'Authentication Error: ' + err
         }
     }
-    */
 
     // Connect to DB
     const client = await pool.connect();
@@ -102,8 +114,8 @@ const getAllTables = async (args, cb, headers) => {
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
         };
-
         */
+
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
         var i;
         for(i = 0; i < 5; i++) {

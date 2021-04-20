@@ -2,6 +2,7 @@ const express = require('express');
 const soap = require('soap');
 const app = express();
 const router = express.Router();
+const auth = require('./auth');
 const { pool } = require('./config');
 
 const PORT = process.env.PORT || 5000;
@@ -30,6 +31,7 @@ const getTableByName = async (args, cb, headers) => {
                 }
         }
     } catch(err) {
+        // Errors if the authentication headers are not provided
         console.error('Authentication Error: ', err);
         return {
             error: 'Authentication Error: ' + err
@@ -83,6 +85,7 @@ const getAllTables = async (args, cb, headers) => {
                 }
         }
     } catch(err) {
+        // Errors if the authentication headers are not provided
         console.error('Authentication Error: ', err);
         return {
             error: 'Authentication Error: ' + err
@@ -103,8 +106,6 @@ const getAllTables = async (args, cb, headers) => {
                                             WHERE table_schema='salesforce'
                                             AND table_type='BASE TABLE'`);
         const tableArray = tableQuery.rows;
-
-        console.log('Table Array: ', tableArray);
 
         results = {};
         /* 
@@ -149,9 +150,10 @@ var soapService = {
     }
 };
 
-// REST
+// REST SERVICE
 // Get specific table by name
-router.get('/get/:tableName', async (req, res) => {
+// Secure Route
+router.get('/get/:tableName', auth, async (req, res) => {
     const { tableName } = req.params;
     console.log('TABLE: ', tableName);
     const client = await pool.connect();

@@ -171,6 +171,7 @@ router.get('/get/:tableName', auth, async (req, res) => {
 
     // Try get data from db
     try {
+        console.log('Getting table by name');
         const result = await client.query(`SELECT * FROM ${tableName}`);
         client.release();
 

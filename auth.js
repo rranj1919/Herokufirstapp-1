@@ -15,11 +15,11 @@ module.exports = function(req, res, next) {
             next();
         } else {
             console.log('Unauthorized request');
-            res.status(401).json({ msg: 'Unauthorized' });
+            return res.status(401).json({ msg: 'Unauthorized' });
         }
     } catch (err) {
         console.log('Unauthorized request');
-        res.status(401).json({ msg: 'Unauthorized' });
+        return res.status(401).json({ msg: 'Unauthorized' });
     }
 
     /*

@@ -2,11 +2,20 @@ const express = require('express');
 const soap = require('soap');
 const app = express();
 const router = express.Router();
+const rateLimit = require("express-rate-limit");
 const auth = require('./auth');
 const { pool } = require('./config');
 
 // Read the WSDL file
 const xml = require('fs').readFileSync('service.wsdl', 'utf8');
+
+// Set rate-limit - 50 requests every 30 min
+const limiter = rateLimit({
+    windowMs: 30 * 60 * 1000, 
+    max: 50
+});
+
+app.use(limiter);
 
 // Get table from postgres DB by table name - used by soap service
 const getTableByName = async (args, cb, headers) => {
@@ -152,7 +161,6 @@ var soapService = {
 // Secure Route - with auth.js middleware
 router.get('/get/:tableName', auth, async (req, res) => {
     const { tableName } = req.params;
-    console.log('TABLE: ', tableName);
     const client = await pool.connect();
 
     // Try get data from db
@@ -193,7 +201,6 @@ router.get('/getAllTables', auth, async (req, res) => {
          
         // Loop through all tables and query them - save in results obj
         for(const table of tableArray) {
-            console.log('Querying table: ', table.table_name);
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
         };

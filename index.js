@@ -78,7 +78,7 @@ const getTableByName = async (args, cb, headers) => {
 // Get data from all tables in the heroku postgresql DB - used by soap service
 const getAllTables = async (args, cb, headers) => {
     console.log('New SOAP request');
-    
+
     // Deny Unauthorized Requests
     try {
         console.log('Authorizing user ' + headers.Security.UsernameToken.Username +'...');
@@ -129,7 +129,7 @@ const getAllTables = async (args, cb, headers) => {
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
         };
-        console.log('Getting ' + tableArray.length() + ' tables');
+        console.log('Getting ' + tableArray.length + ' tables');
         /*
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
         var i;

@@ -69,9 +69,9 @@ const getTableByName = async (args, cb, headers) => {
             data: results
         }
     } catch (err) {
-        console.error(err);
+        console.log('Error getting table by name: ', err);
         return {
-            error: err
+            error: 'Error getting table by name: ' +err
         }
     }
 }

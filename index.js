@@ -13,7 +13,10 @@ const xml = require('fs').readFileSync('service.wsdl', 'utf8');
 // Set rate-limit - max 50 requests every 30 min
 const limiter = rateLimit({
     windowMs: 30 * 60 * 1000, 
-    max: 50
+    max: 1,
+    message: {
+        limit: 'Request limit reached, try again later.'
+    }
 });
 app.use(limiter);
 
@@ -197,7 +200,6 @@ router.get('/getAllTables', auth, async (req, res) => {
         // Get all table names
         // Change table_schema='salesforce' to other schema to show that specific schema
         // Or remove it to show all
-        console.log('Getting all tables');
         const tableQuery = await client.query(`SELECT table_name
                                             FROM information_schema.tables
                                             WHERE table_schema='salesforce'
@@ -211,6 +213,8 @@ router.get('/getAllTables', auth, async (req, res) => {
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
         };
+
+        console.log('Getting ' + tableArray.length + ' tables');
         
         /*
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])

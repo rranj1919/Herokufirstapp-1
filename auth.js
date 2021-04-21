@@ -1,18 +1,25 @@
 // Authorize request middleware - used in REST routes
 module.exports = function(req, res, next) {
-    // Check if credentials are missing
-    if(!req.header('username') || !req.header('password')) {
-        return res.status(401).json({ msg: 'Missing Credentials' });
-    }
+    
 
-    // Try to check if credentials are correct
+    // Try authorize user
     try {
+        console.log("Authorizing user ", req.header('username'));
+        // Check if credentials are missing
+        if(!req.header('username') || !req.header('password')) {
+            console.log('Unauthorized request');
+            return res.status(401).json({ msg: 'Missing Credentials' });
+        }
+        // Check if credentials are correct
         if(req.header('username') == process.env.USERNAME && req.header('password') == process.env.PASSWORD) {
+            console.log("User Authorized")
             next();
         } else {
+            console.log('Unauthorized request');
             res.status(401).json({ msg: 'Unauthorized' });
         }
     } catch (err) {
+        console.log('Unauthorized request');
         res.status(401).json({ msg: 'Unauthorized' });
     }
 

@@ -20,10 +20,10 @@ app.use(limiter);
 // SOAP SERVICE METHODS
 // Get table from postgres DB by table name - used by soap service
 const getTableByName = async (args, cb, headers) => {
-
+    console.log('New SOAP request');
     // Deny Unauthorized Requests
     try {
-        console.log("Authorizing user ", headers.Security.UsernameToken.Username);
+        console.log('Authorizing user ' + headers.Security.UsernameToken.Username +'...');
         // Check if username exists
         if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USERNAME) {
             console.log('Unauthorized request');
@@ -77,7 +77,8 @@ const getTableByName = async (args, cb, headers) => {
 
 // Get data from all tables in the heroku postgresql DB - used by soap service
 const getAllTables = async (args, cb, headers) => {
-
+    console.log('New SOAP request');
+    
     // Deny Unauthorized Requests
     try {
         console.log('Authorizing user ' + headers.Security.UsernameToken.Username +'...');

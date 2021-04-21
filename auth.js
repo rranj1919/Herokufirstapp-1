@@ -1,10 +1,9 @@
 // Authorize request middleware - used in REST routes
 module.exports = function(req, res, next) {
-    
-
+    console.log('New REST request');
     // Try authorize user
     try {
-        console.log("Authorizing user ", req.header('username'));
+        console.log('Authorizing user ' + req.header('username') +'...');
         // Check if credentials are missing
         if(!req.header('username') || !req.header('password')) {
             console.log('Unauthorized request');

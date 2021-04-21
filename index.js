@@ -56,7 +56,6 @@ const getTableByName = async (args, cb, headers) => {
     // Try get data from DB
     try {
         console.log('Getting table by name');
-        console.log('Querying table: ', args.tableName);
         const result = await client.query(`SELECT * FROM ${args.tableName}`);
         client.release();
 
@@ -81,7 +80,7 @@ const getAllTables = async (args, cb, headers) => {
 
     // Deny Unauthorized Requests
     try {
-        console.log("Authorizing user ", headers.Security.UsernameToken.Username);
+        console.log('Authorizing user ' + headers.Security.UsernameToken.Username +'...');
         // Check if username exists
         if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USERNAME) {
             console.log('Unauthorized request');
@@ -116,7 +115,6 @@ const getAllTables = async (args, cb, headers) => {
         // Get all table names
         // Change table_schema='salesforce' to other schema to show that specific schema
         // Or remove it to show all
-        console.log('Getting all tables');
         const tableQuery = await client.query(`SELECT table_name
                                             FROM information_schema.tables
                                             WHERE table_schema='salesforce'
@@ -127,11 +125,10 @@ const getAllTables = async (args, cb, headers) => {
          
         // Loop through all tables and query them - save in results obj
         for(const table of tableArray) {
-            console.log('Querying table: ', table.table_name);
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
         };
-        
+        console.log('Getting ' + tableArray.length() + ' tables');
         /*
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
         var i;
@@ -147,9 +144,9 @@ const getAllTables = async (args, cb, headers) => {
         }
         
     } catch (err) {
-        console.error(err);
+        console.log('Error getting all tables: ',err);
         return {
-            error: err
+            error: 'Error getting all tables: ' + err
         }
     }
 }

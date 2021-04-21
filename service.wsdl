@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions name="SoapService" targetNamespace="https://salesforce-heroku-datasync.herokuapp.com/api/soap" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="https://salesforce-heroku-datasync.herokuapp.com/api/soap" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
+    <types>
+        <schema targetNamespace="https://salesforce-heroku-datasync.herokuapp.com/api/soap" xmlns="http://www.w3.org/2000/10/XMLSchema">
+            <element name="UsernameToken">
+                <complexType>
+                    <sequence>
+                        <element name="Username" minOccurs="0" maxOccurs="1" type="xsd:string" />
+                        <element name="Password" minOccurs="0" maxOccurs="1" type="xsd:string" />
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+
     <message name="GetTableByNameRequest">
         <part name="request" type="xsd:string" />
     </message>

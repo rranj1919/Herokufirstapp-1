@@ -124,22 +124,22 @@ const getAllTables = async (args, cb, headers) => {
         const tableArray = tableQuery.rows;
 
         results = {};
-        /* 
+         
         // Loop through all tables and query them - save in results obj
         for(const table of tableArray) {
             console.log('Querying table: ', table.table_name);
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
         };
-        */
-
+        
+        /*
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
         var i;
         for(i = 0; i < 5; i++) {
             let result = await client.query(`SELECT * FROM salesforce.${tableArray[i].table_name}`);
             results[tableArray[i].table_name] = result.rows;
         }
-        
+        */
         client.release();
 
         return {

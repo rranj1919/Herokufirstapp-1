@@ -10,10 +10,10 @@ const { pool } = require('./config');
 const xml = require('fs').readFileSync('service.wsdl', 'utf8');
 
 // DDos-attack protection
-// Set rate-limit - max 50 requests every 30 min
+// Set rate-limit - max 100 requests every 30 min
 const limiter = rateLimit({
     windowMs: 30 * 60 * 1000, 
-    max: 1,
+    max: 100,
     message: {
         limit: 'Request limit reached, try again later.'
     }

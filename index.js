@@ -5,13 +5,14 @@ const helmet = require("helmet");
 const auth = require('./auth');
 const { pool } = require('./config');
 
+// Init express app
 const app = express();
 const router = express.Router();
 
 // Read the WSDL file
 const xml = require('fs').readFileSync('service.wsdl', 'utf8');
 
-// DDos-attack protection
+// Brute Force / DDos-attack protection
 // Set rate-limit - max 100 requests every 30 min
 const limiter = rateLimit({
     windowMs: 30 * 60 * 1000, 
@@ -25,11 +26,11 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Protect app by setting HTTP header correctly with helmet
+// Set security HTTP headers in responses with helmet
 app.use(helmet());
 
 // SOAP SERVICE METHODS
-// Get table from postgres DB by table name - used by soap service
+// Get table from postgres DB by table name - used by SOAP service
 const getTableByName = async (args, cb, headers) => {
     console.log('New SOAP request');
     // Deny Unauthorized Requests
@@ -86,7 +87,7 @@ const getTableByName = async (args, cb, headers) => {
     }
 }
 
-// Get data from all tables in the heroku postgresql DB - used by soap service
+// Get data from all tables in the heroku postgresql DB - used by SOAP service
 const getAllTables = async (args, cb, headers) => {
     console.log('New SOAP request');
 
@@ -207,22 +208,20 @@ router.get('/getAllTables', auth, async (req, res) => {
     try {
         // Get all table names
         // Change table_schema='salesforce' to other schema to show that specific schema
-        // Or remove it to show all
+        // Or remove it to get tables from all schemas
         const tableQuery = await client.query(`SELECT table_name
                                             FROM information_schema.tables
                                             WHERE table_schema='salesforce'
                                             AND table_type='BASE TABLE'`);
         const tableArray = tableQuery.rows;
-
-        results = {};
+        console.log('Getting ' + tableArray.length + ' tables');
          
         // Loop through all tables and query them - save in results obj
+        results = {};
         for(const table of tableArray) {
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
-        };
-
-        console.log('Getting ' + tableArray.length + ' tables');
+        };  
         
         /*
         // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
@@ -233,6 +232,7 @@ router.get('/getAllTables', auth, async (req, res) => {
             results[tableArray[i].table_name] = result.rows;
         }
         */
+       
         client.release();
 
         return res.status(200).json(results);

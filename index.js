@@ -1,10 +1,12 @@
 const express = require('express');
 const soap = require('soap');
-const app = express();
-const router = express.Router();
 const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 const auth = require('./auth');
 const { pool } = require('./config');
+
+const app = express();
+const router = express.Router();
 
 // Read the WSDL file
 const xml = require('fs').readFileSync('service.wsdl', 'utf8');
@@ -15,10 +17,16 @@ const limiter = rateLimit({
     windowMs: 30 * 60 * 1000, 
     max: 100,
     message: {
-        limit: 'Request limit reached, try again later.'
+        limit: 'Request limit reached.'
+    },
+    onLimitReached: function(req, res) {
+        console.log('API Request Limit Reached.');
     }
 });
 app.use(limiter);
+
+// Protect app by setting HTTP header correctly with helmet
+app.use(helmet());
 
 // SOAP SERVICE METHODS
 // Get table from postgres DB by table name - used by soap service
@@ -46,7 +54,7 @@ const getTableByName = async (args, cb, headers) => {
         // Errors if the authentication headers are not provided
         console.error('Authentication Error: ', err);
         return {
-            error: 'Authentication Error: ' + err
+            error: 'Authentication Error'
         }
     }
 
@@ -73,7 +81,7 @@ const getTableByName = async (args, cb, headers) => {
     } catch (err) {
         console.log('Error getting table by name: ', err);
         return {
-            error: 'Error getting table by name: ' +err
+            error: 'Error getting table by name'
         }
     }
 }
@@ -104,7 +112,7 @@ const getAllTables = async (args, cb, headers) => {
         // Errors if the authentication headers are not provided
         console.error('Authentication Error: ', err);
         return {
-            error: 'Authentication Error: ' + err
+            error: 'Authentication Error'
         }
     }
 
@@ -150,7 +158,7 @@ const getAllTables = async (args, cb, headers) => {
     } catch (err) {
         console.log('Error getting all tables: ',err);
         return {
-            error: 'Error getting all tables: ' + err
+            error: 'Error getting all tables'
         }
     }
 }

@@ -109,7 +109,7 @@ const getAllTables = async (args, cb, headers) => {
                 // loop through all object fields and check for fields with objects (date)
                 // convert to ISOstring so it can be passed in SOAP response
                 for (const [key, value] of Object.entries(result)) {
-                    if(typeof(value) == 'object') {
+                    if(typeof(value) == 'object' && value!=null ) {
                         result[key] = value.toISOString();
                     }
                 }

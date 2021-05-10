@@ -2,8 +2,9 @@ const express = require('express');
 const soap = require('soap');
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
-const auth = require('./auth');
+const auth = require('./authRest');
 const { pool } = require('./config');
+const { isAuthorizedSoap } = require('./authSoap');
 
 // Init express app
 const app = express();
@@ -26,41 +27,23 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Set security HTTP headers in responses with helmet
+// Set HTTP header security in responses with helmet
 app.use(helmet());
 
 // SOAP SERVICE METHODS
 // Get table from postgres DB by table name - used by SOAP service
 const getTableByName = async (args, cb, headers) => {
     console.log('New SOAP request');
-    // Deny Unauthorized Requests
-    try {
-        console.log('Authorizing user ' + headers.Security.UsernameToken.Username +'...');
-        // Check if username exists
-        if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USERNAME) {
-            console.log('Unauthorized request');
-            return {
-                error: 'Unauthorized'
-            }
-        }
 
-        // Check if password exists and matches
-        if(!headers.Security.UsernameToken.Password['$value'] || headers.Security.UsernameToken.Password['$value'] !== process.env.PASSWORD) {
-            console.log('Unauthorized request');
-            return {
-                error: 'Unauthorized User'
-            }
-        }
-    } catch(err) {
-        // Errors if the authentication headers are not provided
-        console.error('Authentication Error: ', err);
+    // Deny Unauthorized Requests
+    if(!isAuthorizedSoap(headers)) {
         return {
-            error: 'Authentication Error'
+            error: 'Unauthorized User'
         }
     }
 
     // If here - user has provided correct credentials and is authorized
-    console.log("User Authorized")
+    console.log("User Authorized");
 
     // Connect to DB
     const client = await pool.connect();
@@ -92,28 +75,9 @@ const getAllTables = async (args, cb, headers) => {
     console.log('New SOAP request');
 
     // Deny Unauthorized Requests
-    try {
-        console.log('Authorizing user ' + headers.Security.UsernameToken.Username +'...');
-        // Check if username exists
-        if(!headers.Security.UsernameToken.Username || headers.Security.UsernameToken.Username !== process.env.USERNAME) {
-            console.log('Unauthorized request');
-            return {
-                error: 'Unauthorized User'
-            }
-        }
-
-        // Check if password exists and matches
-        if(!headers.Security.UsernameToken.Password['$value'] || headers.Security.UsernameToken.Password['$value'] !== process.env.PASSWORD) {
-            console.log('Unauthorized request');
-            return {
-                error: 'Unauthorized User'
-            }
-        }
-    } catch(err) {
-        // Errors if the authentication headers are not provided
-        console.error('Authentication Error: ', err);
+    if(!isAuthorizedSoap(headers)) {
         return {
-            error: 'Authentication Error'
+            error: 'Unauthorized User'
         }
     }
 
@@ -138,8 +102,19 @@ const getAllTables = async (args, cb, headers) => {
          
         // Loop through all tables and query them - save in results obj
         for(const table of tableArray) {
-            let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
-            results[table.table_name] = result.rows;
+            console.log('Querying table: ', table.table_name);
+            let result = await client.query(`SELECT * FROM ${table.table_name} ${queryWhere}`)
+            let resultsArray = result.rows;
+            for (const result of resultsArray){
+                // loop through all object fields and check for fields with objects (date)
+                // convert to ISOstring so it can be passed in SOAP response
+                for (const [key, value] of Object.entries(result)) {
+                    if(typeof(value) == 'object') {
+                        result[key] = value.toISOString();
+                    }
+                }
+            }
+            results[table.table_name] = resultsArray;
         };
         console.log('Getting ' + tableArray.length + ' tables');
         /*

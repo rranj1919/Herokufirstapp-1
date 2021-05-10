@@ -103,7 +103,7 @@ const getAllTables = async (args, cb, headers) => {
         // Loop through all tables and query them - save in results obj
         for(const table of tableArray) {
             console.log('Querying table: ', table.table_name);
-            let result = await client.query(`SELECT * FROM ${table.table_name}`)
+            let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             let resultsArray = result.rows;
             for (const result of resultsArray){
                 // loop through all object fields and check for fields with objects (date)

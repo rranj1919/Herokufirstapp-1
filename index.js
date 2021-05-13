@@ -37,9 +37,12 @@ const getTableByName = async (args, cb, headers) => {
 
     // Deny Unauthorized Requests
     if(!isAuthorizedSoap(headers)) {
-        return {
-            error: 'Unauthorized User'
-        }
+        throw {
+            Fault: {
+              Reason: { Text: 'Unauthorized' },
+              statusCode: 401
+            }
+        };
     }
 
     // If here - user has provided correct credentials and is authorized
@@ -64,9 +67,12 @@ const getTableByName = async (args, cb, headers) => {
         }
     } catch (err) {
         console.log('Error getting table by name: ', err);
-        return {
-            error: 'Error getting table by name'
-        }
+        throw {
+            Fault: {
+              Reason: { Text: 'Error getting table by name' },
+              statusCode: 500
+            }
+        };
     }
 }
 
@@ -76,9 +82,12 @@ const getAllTables = async (args, cb, headers) => {
 
     // Deny Unauthorized Requests
     if(!isAuthorizedSoap(headers)) {
-        return {
-            error: 'Unauthorized User'
-        }
+        throw {
+            Fault: {
+              Reason: { Text: 'Unauthorized' },
+              statusCode: 401
+            }
+        };
     }
 
     // If here - user has provided correct credentials and is authorized
@@ -103,13 +112,13 @@ const getAllTables = async (args, cb, headers) => {
         // Loop through all tables and query them - save in results obj
         for(const table of tableArray) {
             console.log('Querying table: ', table.table_name);
-            let result = await client.query(`SELECT * FROM ${table.table_name} ${queryWhere}`)
+            let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             let resultsArray = result.rows;
             for (const result of resultsArray){
                 // loop through all object fields and check for fields with objects (date)
                 // convert to ISOstring so it can be passed in SOAP response
                 for (const [key, value] of Object.entries(result)) {
-                    if(typeof(value) == 'object') {
+                    if(typeof(value) == 'object' && value != null) {
                         result[key] = value.toISOString();
                     }
                 }
@@ -133,9 +142,12 @@ const getAllTables = async (args, cb, headers) => {
         
     } catch (err) {
         console.log('Error getting all tables: ',err);
-        return {
-            error: 'Error getting all tables'
-        }
+        throw {
+            Fault: {
+              Reason: { Text: 'Error getting all tables' },
+              statusCode: 500
+            }
+        };
     }
 }
 
@@ -170,7 +182,7 @@ router.get('/get/:tableName', auth, async (req, res) => {
         return res.status(200).json(results);
     } catch (err) {
         console.error(err);
-        res.status(400).send('ERROR: ', err);
+        res.status(500).send('ERROR: ', err);
     }
 });
 
@@ -213,7 +225,7 @@ router.get('/getAllTables', auth, async (req, res) => {
         return res.status(200).json(results);
     } catch (err) {
         console.error(err);
-        res.status(400).send('ERROR: ', err);
+        res.status(500).send('ERROR: ', err);
     }
 });
 

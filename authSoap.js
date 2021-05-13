@@ -1,6 +1,6 @@
 // Check SOAP request authorization
 // Returns true if credentials are correct, false otherwise
-const isAuthorizedSoap = (headers) => {
+const isAuthorized = (headers) => {
     // Deny Unauthorized Requests
     try {
         console.log("Authorizing user ", headers.Security.UsernameToken.Username);
@@ -25,5 +25,5 @@ const isAuthorizedSoap = (headers) => {
 }
 
 module.exports = {
-    isAuthorizedSoap
+    isAuthorized
 }

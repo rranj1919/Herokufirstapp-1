@@ -4,7 +4,7 @@ const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const auth = require('./authRest');
 const { pool } = require('./config');
-const { isAuthorizedSoap } = require('./authSoap');
+//const { isAuthorizedSoap } = require('./authSoap');
 
 // Init express app
 const app = express();
@@ -35,7 +35,7 @@ app.use(helmet());
 const getTableByName = async (args, cb, headers) => {
     console.log('New SOAP request');
 
-    // Deny Unauthorized Requests
+    /*// Deny Unauthorized Requests
     if(!isAuthorizedSoap(headers)) {
         throw {
             Fault: {
@@ -44,7 +44,7 @@ const getTableByName = async (args, cb, headers) => {
             }
         };
     }
-
+ */
     // If here - user has provided correct credentials and is authorized
     console.log("User Authorized");
 
@@ -80,7 +80,7 @@ const getTableByName = async (args, cb, headers) => {
 const getAllTables = async (args, cb, headers) => {
     console.log('New SOAP request');
 
-    // Deny Unauthorized Requests
+    /*// Deny Unauthorized Requests
     if(!isAuthorizedSoap(headers)) {
         throw {
             Fault: {
@@ -89,7 +89,7 @@ const getAllTables = async (args, cb, headers) => {
             }
         };
     }
-
+	*/
     // If here - user has provided correct credentials and is authorized
     console.log("User Authorized")
 

@@ -11,11 +11,18 @@
                     </sequence>
                 </complexType>
             </element>
+            <element name="GetTableByName">
+                <complexType>
+                    <all>
+                        <element name="tableName" type="xsd:string" />
+                    </all>
+                </complexType>
+            </element>
         </schema>
     </types>
 
     <message name="GetTableByNameRequest">
-        <part name="tableName" type="xsd:string" />
+        <part element="tns:GetTableByName" name="parameter" />
     </message>
 
     <message name="GetTableByNameResponse">
@@ -47,8 +54,7 @@
         </sp:SupportingTokens>
     </wsp:Policy>
 
-    <binding name="GetTableByName" type="tns:SoapPort">
-        <wsp:PolicyReference URI="#UP_policy" />
+    <binding name="GetTableByName_Binding" type="tns:SoapPort">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="GetTableByName">
             <soap:operation soapAction="GetTableByName" />
@@ -62,8 +68,7 @@
         </operation>
     </binding>
 
-    <binding name="GetAllTables" type="tns:SoapPort">
-        <wsp:PolicyReference URI="#UP_policy" />
+    <binding name="GetAllTables_Binding" type="tns:SoapPort">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="GetAllTables">
             <soap:operation soapAction="GetAllTables" />

@@ -11,18 +11,11 @@
                     </sequence>
                 </complexType>
             </element>
-            <element name="GetTableByName">
-                <complexType>
-                    <all>
-                        <element name="tableName" type="xsd:string" />
-                    </all>
-                </complexType>
-            </element>
         </schema>
     </types>
 
     <message name="GetTableByNameRequest">
-        <part element="tns:GetTableByName" name="parameter" />
+        <part name="tableName" type="xsd:string" />
     </message>
 
     <message name="GetTableByNameResponse">
@@ -54,7 +47,8 @@
         </sp:SupportingTokens>
     </wsp:Policy>
 
-    <binding name="GetTableByName_Binding" type="tns:SoapPort">
+    <binding name="GetTables" type="tns:SoapPort">
+        <wsp:PolicyReference URI="#UP_policy" />
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="GetTableByName">
             <soap:operation soapAction="GetTableByName" />
@@ -66,10 +60,6 @@
                 <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://salesforce-heroku-datasync.herokuapp.com/api/soap" use="encoded" />
             </output>
         </operation>
-    </binding>
-
-    <binding name="GetAllTables_Binding" type="tns:SoapPort">
-        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="GetAllTables">
             <soap:operation soapAction="GetAllTables" />
             <input>
@@ -84,10 +74,7 @@
 
     <service name="SoapService">
         <documentation>WSDL File for SOAP Service</documentation>
-        <port binding="tns:GetTableByName_Binding" name="SoapPort">
-            <soap:address location="https://salesforce-heroku-datasync.herokuapp.com/api/soap" />
-        </port>
-        <port binding="tns:GetAllTables_Binding" name="SoapPort">
+        <port binding="tns:GetTables" name="SoapPort">
             <soap:address location="https://salesforce-heroku-datasync.herokuapp.com/api/soap" />
         </port>
     </service>

@@ -104,7 +104,7 @@ const getAllTables = async (args, cb, headers) => {
         const tableQuery = await client.query(`SELECT table_name
                                             FROM information_schema.tables
                                             WHERE table_schema='salesforce'
-                                            AND table_type='BASE TABLE' LIMIT 5`);
+                                            AND table_type='BASE TABLE' LIMIT 2`);
         const tableArray = tableQuery.rows;
 
         results = {};

@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const auth = require('./authRest');
 const { pool } = require('./config');
 const { isAuthorizedSoap } = require('./authSoap');
+const ifaces = require('os').networkInterfaces();
 
 // Init express app
 const app = express();
@@ -30,6 +31,15 @@ app.use(limiter);
 // Set HTTP header security in responses with helmet
 app.use(helmet());
 
+// Method for getting IP address
+const getIpAddress = () => {
+    let address = null;
+    for (var dev in ifaces) {
+        ifaces[dev].filter((details) => details.family === 'IPv4' && details.internal === false ? address = details.address: undefined);
+    }
+    return address;
+}
+
 // SOAP SERVICE METHODS
 // Get table from postgres DB by table name - used by SOAP service
 const getTableByName = async (args, cb, headers) => {
@@ -53,6 +63,10 @@ const getTableByName = async (args, cb, headers) => {
 
     // Try get data from DB
     try {
+        // Get IP address
+        const ipa = getIpAddress();
+        console.log("CURRENT IP: ", ipa);
+
         console.log('Getting table by name');
         const result = await client.query(`SELECT * FROM ${args.tableName}`);
         client.release();
@@ -98,13 +112,18 @@ const getAllTables = async (args, cb, headers) => {
 
     // Try get data from DB
     try {
+        // Get IP address
+        const ipa = getIpAddress();
+        console.log("CURRENT IP: ", ipa);
+
         // Get all table names
         // Change table_schema='salesforce' to other schema to show that specific schema
         // Or remove it to show all
         const tableQuery = await client.query(`SELECT table_name
                                             FROM information_schema.tables
                                             WHERE table_schema='salesforce'
-                                            AND table_type='BASE TABLE' LIMIT 2`);
+                                            AND table_type='BASE TABLE'
+                                            LIMIT 2`);
         const tableArray = tableQuery.rows;
 
         results = {};

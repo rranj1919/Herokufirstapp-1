@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const auth = require('./authRest');
 const { pool } = require('./config');
 const { isAuthorizedSoap } = require('./authSoap');
-const ifaces = require('os').networkInterfaces();
+const os = require('os');
 
 // Init express app
 const app = express();
@@ -64,8 +64,7 @@ const getTableByName = async (args, cb, headers) => {
     // Try get data from DB
     try {
         // Get IP address
-        const ipa = getIpAddress();
-        console.log("CURRENT IP: ", ipa);
+        console.log("CURRENT IP: ", os.networkInterfaces());
 
         console.log('Getting table by name');
         const result = await client.query(`SELECT * FROM ${args.tableName}`);
@@ -113,8 +112,7 @@ const getAllTables = async (args, cb, headers) => {
     // Try get data from DB
     try {
         // Get IP address
-        const ipa = getIpAddress();
-        console.log("CURRENT IP: ", ipa);
+        console.log("CURRENT IP: ", os.networkInterfaces());
 
         // Get all table names
         // Change table_schema='salesforce' to other schema to show that specific schema

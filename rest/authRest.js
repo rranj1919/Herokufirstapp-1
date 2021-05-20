@@ -4,15 +4,18 @@ module.exports = function(req, res, next) {
     // Try authorize user
     try {
         console.log('Authorizing user ' + req.header('username') +'...');
+
         // Check if credentials are missing
         if(!req.header('username') || !req.header('password')) {
             console.log('Unauthorized request');
             return res.status(401).json({ msg: 'Missing Credentials' });
         }
+
         // Check if credentials are correct
         if(req.header('username') == process.env.USERNAME && req.header('password') == process.env.PASSWORD) {
             console.log("User Authorized")
             next();
+            
         } else {
             console.log('Unauthorized request');
             return res.status(401).json({ msg: 'Unauthorized' });

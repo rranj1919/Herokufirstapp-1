@@ -34,11 +34,21 @@ const getTableByName = async (args, cb, headers) => {
 
         console.log('Getting table by name');
         const result = await client.query(`SELECT * FROM ${args.tableName}`);
+        let resultsArray = result.rows;
+        for (const result of resultsArray){
+            // loop through all object fields and check for fields with objects (date)
+            // convert to ISOstring so it can be passed in SOAP response
+            for (const [key, value] of Object.entries(result)) {
+                if(typeof(value) == 'object' && value != null) {
+                    result[key] = value.toISOString();
+                }
+            }
+        }
         client.release();
 
         var results = {
             'table': args.tableName,
-            'result': (result) ? result.rows : null
+            'result': (result) ? resultsArray : null
         };
 
         return {
@@ -111,14 +121,7 @@ const getAllTables = async (args, cb, headers) => {
             results[table.table_name] = resultsArray;
         };
         console.log('Getting ' + tableArray.length + ' tables');
-        /*
-        // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
-        var i;
-        for(i = 0; i < 5; i++) {
-            let result = await client.query(`SELECT * FROM salesforce.${tableArray[i].table_name}`);
-            results[tableArray[i].table_name] = result.rows;
-        }
-        */
+
         client.release();
 
         return {

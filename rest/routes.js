@@ -8,10 +8,10 @@ const { pool } = require('../config');
 // @access  Private
 router.get('/get/:tableName', auth, async (req, res) => {
     const { tableName } = req.params;
-    const client = await pool.connect();
 
     // Try get data from db
     try {
+        const client = await pool.connect();
         console.log('Getting table by name');
         const result = await client.query(`SELECT * FROM ${tableName}`);
         client.release();
@@ -24,7 +24,7 @@ router.get('/get/:tableName', auth, async (req, res) => {
         return res.status(200).json(results);
     } catch (err) {
         console.error(err);
-        res.status(500).send('ERROR: ', err);
+        res.status(500).send('Server Error');
     }
 });
 
@@ -32,10 +32,10 @@ router.get('/get/:tableName', auth, async (req, res) => {
 // @desc    Get all tables (objects)
 // @access  Private 
 router.get('/getAllTables', auth, async (req, res) => {
-    const client = await pool.connect();
-
+    
     // Try get data from db
     try {
+        const client = await pool.connect();
         // Get all table names
         // Change table_schema='salesforce' to other schema to show that specific schema
         // Or remove it to get tables from all schemas
@@ -52,23 +52,13 @@ router.get('/getAllTables', auth, async (req, res) => {
             let result = await client.query(`SELECT * FROM salesforce.${table.table_name}`)
             results[table.table_name] = result.rows;
         };  
-        
-        /*
-        // FOR TESTING - Getting a specific amount tables instead of all (set in for loop i < [num of tables])
-        var i;
-        for(i = 0; i < 5; i++) {
-            console.log('Querying table: ', tableArray[i].table_name);
-            let result = await client.query(`SELECT * FROM salesforce.${tableArray[i].table_name}`);
-            results[tableArray[i].table_name] = result.rows;
-        }
-        */
        
         client.release();
 
         return res.status(200).json(results);
     } catch (err) {
         console.error(err);
-        res.status(500).send('ERROR: ', err);
+        res.status(500).send('Server Error');
     }
 });
 

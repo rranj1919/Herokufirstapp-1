@@ -24,13 +24,13 @@ const getTableByName = async (args, cb, headers) => {
     // If here - user has provided correct credentials and is authorized
     console.log("User Authorized");
 
-    // Connect to DB
-    const client = await pool.connect();
-
     // Try get data from DB
     try {
         // Get IP address
         console.log("CURRENT IP: ", os.networkInterfaces());
+
+        // Connect to DB
+        const client = await pool.connect();
 
         console.log('Getting table by name');
         const result = await client.query(`SELECT * FROM ${args.tableName}`);
@@ -84,13 +84,13 @@ const getAllTables = async (args, cb, headers) => {
     // If here - user has provided correct credentials and is authorized
     console.log("User Authorized")
 
-    // Connect to DB
-    const client = await pool.connect();
-
     // Try get data from DB
     try {
         // Get IP address
         console.log("CURRENT IP: ", os.networkInterfaces());
+
+        // Connect to DB
+        const client = await pool.connect();
 
         // Get all table names
         // Change table_schema='salesforce' to other schema to show that specific schema

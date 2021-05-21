@@ -72,11 +72,11 @@ router.get('/get', auth, async (req, res) => {
     console.log('Object query param: ', object);
 
     // If there is to or from query params for date - create necessary WHERE clause
-    var whereDate = 'WHERE systemmodstamp'
+    var whereDate = ''
     if(toDate) {
-        whereDate = fromDate ? ` < '${toDate}' AND systemmodstamp > '${fromDate}'` : ` < '${toDate}'`;
+        whereDate = fromDate ? `WHERE systemmodstamp < '${toDate}' AND systemmodstamp > '${fromDate}'` : `WHERE systemmodstamp < '${toDate}'`;
     } else if(fromDate) {
-        whereDate = ` > '${fromDate}'`;
+        whereDate = `WHERE systemmodstamp > '${fromDate}'`;
     }
 
     const client = await pool.connect();

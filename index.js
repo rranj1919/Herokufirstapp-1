@@ -52,7 +52,7 @@ const soapService = {
 };
 
 app.listen(PORT, () => {
-    // Setup soap route
+    // Setup soap server
     const soapServer = soap.listen(app, endpoint, soapService, wsdlFile);
     console.log(`Server is listening on ${PORT}`);
 });

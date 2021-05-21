@@ -17,7 +17,7 @@ router.get('/get/:tableName', auth, async (req, res) => {
         client.release();
 
         const results = {
-            'table': tableName,
+            'object': tableName,
             'result': (result) ? result.rows : null
         }
 
@@ -59,6 +59,73 @@ router.get('/getAllTables', auth, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
+    }
+});
+
+// @route   GET api/rest/get
+// @desc    Get all or specific table based on query paramters e.g. /api/rest/get?object=ObjName&from=2021-01-01&to=2021-01-14
+// @access  Private 
+router.get('/get', auth, async (req, res) => {
+    const object = req.query.object;
+    const toDate = req.query.to;
+    const fromDate = req.query.from;
+    console.log('Object query param: ', object);
+
+    // If there is to or from query params for date - create necessary WHERE clause
+    var whereDate = 'WHERE systemmodstamp'
+    if(toDate) {
+        whereDate = fromDate ? ` < '${toDate}' AND systemmodstamp > '${fromDate}'` : ` < '${toDate}'`;
+    } else if(fromDate) {
+        whereDate = ` > '${fromDate}'`;
+    }
+
+    const client = await pool.connect();
+
+    // Try get data from db
+    // Check if object param is all or undefined - else query specific table
+    if(object === "all" || !object) {
+        try{
+            console.log('Getting all tables');
+            const tableQuery = await client.query(`SELECT table_name
+                                                FROM information_schema.tables
+                                                WHERE table_schema='salesforce'
+                                                AND table_type='BASE TABLE'`);
+            const tableArray = tableQuery.rows;
+
+            results = {};
+            
+            console.log("WHERE QUERY: ", whereDate);
+            // Loop through all tables and query them - save in results obj
+            for(const table of tableArray) {
+                let result = await client.query(`SELECT * FROM salesforce.${table.table_name} ${whereDate}`);
+                if(result.rows.length > 0) {
+                    results[table.table_name] = result.rows;
+                }
+            };
+
+            client.release();
+
+            return res.status(200).json(results);
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Server Error');
+        }
+        
+    } else {
+        try {
+            const result = await client.query(`SELECT * FROM salesforce.${object} ${whereDate}`);
+            client.release();
+    
+            const results = {
+                'object': object,
+                'result': (result) ? result.rows : null
+            }
+    
+            return res.status(200).json(results);
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Server Error');
+        }
     }
 });
 

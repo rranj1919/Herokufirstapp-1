@@ -85,7 +85,7 @@ router.get('/get', auth, async (req, res) => {
                                                 FROM information_schema.tables
                                                 WHERE table_schema='${schema}'
                                                 AND table_type='BASE TABLE'
-                                                AND (table_name NOT LIKE '_hc%' OR table_name NOT LIKE '_sf%' OR table_name NOT LIKE '_tr%'`);
+                                                AND (table_name NOT LIKE '_hc%' OR table_name NOT LIKE '_sf%' OR table_name NOT LIKE '_tr%')`);
             const tableArray = tableQuery.rows;
             console.log(tableArray);
             results = {};

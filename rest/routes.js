@@ -87,7 +87,6 @@ router.get('/get', auth, async (req, res) => {
 
             results = {};
             
-            console.log("WHERE QUERY: ", whereDate);
             // Loop through all tables and query them - save in results obj
             for(const table of tableArray) {
                 console.log('Querying: ', table.table_name);

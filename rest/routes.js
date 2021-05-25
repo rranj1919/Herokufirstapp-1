@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('./authRest');
 const { pool } = require('../config');
+const { createWhereClause } = require('./utils');
 
 // @route   GET api/rest/get/:tableName
 // @desc    Get table (object) by name
@@ -71,14 +72,6 @@ router.get('/get', auth, async (req, res) => {
     const fromDate = req.query.from;
     console.log('Object query param: ', object);
 
-    // If there is to or from query params for date - create necessary WHERE clause
-    // var whereDate = ''
-    // if(toDate) {
-    //     whereDate = fromDate ? `WHERE systemmodstamp < '${toDate}' AND systemmodstamp > '${fromDate}'` : `WHERE systemmodstamp < '${toDate}'`;
-    // } else if(fromDate) {
-    //     whereDate = `WHERE systemmodstamp > '${fromDate}'`;
-    // }
-
     const client = await pool.connect();
 
     // Try get data from db
@@ -98,6 +91,7 @@ router.get('/get', auth, async (req, res) => {
             // Loop through all tables and query them - save in results obj
             for(const table of tableArray) {
                 console.log('Querying: ', table.table_name);
+                let whereDate = createWhereClause(table.table_name, fromDate, toDate);
                 let result = await client.query(`SELECT * FROM salesforce.${table.table_name} ${whereDate}`);
                 if(result.rows.length > 0) {
                     results[table.table_name] = result.rows;
@@ -115,22 +109,8 @@ router.get('/get', auth, async (req, res) => {
     } else {
         // Else - query specific object
         try {
-            const fields = await client.query(`SELECT column_name 
-                                            FROM information_schema.columns 
-                                            WHERE table_schema = 'salesforce'
-                                            AND table_name = '${object}'`);
-
-            console.log("FIELDS: ", fields.rows);
-            
-            if (fields.rows.some(field => field.column_name === 'systemmodstamp')) {
-                console.log("has systemmodstamp")
-            } else if (fields.rows.some(field => field.column_name === 'lastmodifieddate')) {
-                console.log("has lastmodifieddate")
-            } else {
-                console.log("createddate")
-            }
-            
-            const result = await client.query(`SELECT * FROM salesforce.${object}`);
+            let whereDate = createWhereClause(object, fromDate, toDate);
+            const result = await client.query(`SELECT * FROM salesforce.${object} ${whereDate}`);
             client.release();
     
             const results = {

@@ -70,7 +70,9 @@ router.get('/get', auth, async (req, res) => {
     const object = req.query.object;
     const toDate = req.query.to;
     const fromDate = req.query.from;
-    console.log('Object query param: ', object);
+    const schema = req.query.schema ? req.query.schema : 'servicepoc';
+    console.log('Object: ', object);
+    console.log('Schema: ', schema);
 
     const client = await pool.connect();
 
@@ -81,7 +83,7 @@ router.get('/get', auth, async (req, res) => {
             console.log('Getting all tables');
             const tableQuery = await client.query(`SELECT table_name
                                                 FROM information_schema.tables
-                                                WHERE table_schema='salesforce'
+                                                WHERE table_schema='${schema}'
                                                 AND table_type='BASE TABLE'`);
             const tableArray = tableQuery.rows;
 
@@ -92,11 +94,11 @@ router.get('/get', auth, async (req, res) => {
                 console.log('Querying: ', table.table_name);
                 const fields = await client.query(`SELECT column_name 
                                     FROM information_schema.columns 
-                                    WHERE table_schema = 'salesforce'
+                                    WHERE table_schema = '${schema}'
                                     AND table_name = '${table.table_name}'`);
                 let whereDate = createWhereClause(fields.rows, fromDate, toDate);
-                console.log("WHERE CLAUSE: ", whereDate);
-                let result = await client.query(`SELECT * FROM salesforce.${table.table_name} ${whereDate}`);
+                console.log("WHERE: ", whereDate);
+                let result = await client.query(`SELECT * FROM ${schema}.${table.table_name} ${whereDate}`);
                 if(result.rows.length > 0) {
                     results[table.table_name] = result.rows;
                 }
@@ -115,11 +117,11 @@ router.get('/get', auth, async (req, res) => {
         try {
             const fields = await client.query(`SELECT column_name 
                                     FROM information_schema.columns 
-                                    WHERE table_schema = 'salesforce'
+                                    WHERE table_schema = '${schema}'
                                     AND table_name = '${object}'`);
             let whereDate = createWhereClause(fields.rows, fromDate, toDate);
-            console.log("WHERE CLAUSE: ", whereDate);
-            const result = await client.query(`SELECT * FROM salesforce.${object} ${whereDate}`);
+            console.log("WHERE: ", whereDate);
+            const result = await client.query(`SELECT * FROM ${schema}.${object} ${whereDate}`);
             client.release();
     
             const results = {

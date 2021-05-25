@@ -77,7 +77,7 @@ router.get('/get', auth, async (req, res) => {
     const client = await pool.connect();
 
     // Try get data from db
-    // Check if object param is all or undefined - then query all tables
+    // Check if object param is "all" or undefined - then query all tables
     if(object === "all" || !object) {
         try{
             console.log('Getting all tables');
@@ -85,7 +85,7 @@ router.get('/get', auth, async (req, res) => {
                                                 FROM information_schema.tables
                                                 WHERE table_schema='${schema}'
                                                 AND table_type='BASE TABLE'
-                                                AND table_name NOT LIKE '_%'`);
+                                                AND (table_name NOT LIKE '_hc%' OR table_name NOT LIKE '_sf%' OR table_name NOT LIKE '_tr%'`);
             const tableArray = tableQuery.rows;
             console.log(tableArray);
             results = {};

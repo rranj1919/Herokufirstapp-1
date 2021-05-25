@@ -3,7 +3,7 @@ module.exports = function(req, res, next) {
     console.log('New REST request');
     // Try authorize user
     try {
-        console.log('Authorizing user ' + req.header('username') +'...');
+        console.log('Authorizing request from ' + req.header('username') +'...');
 
         // Check if credentials are missing
         if(!req.header('username') || !req.header('password')) {
@@ -13,7 +13,7 @@ module.exports = function(req, res, next) {
 
         // Check if credentials are correct
         if(req.header('username') == process.env.USERNAME && req.header('password') == process.env.PASSWORD) {
-            console.log("User Authorized")
+            console.log("Request Authorized")
             next();
             
         } else {

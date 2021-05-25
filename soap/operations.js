@@ -81,9 +81,6 @@ const getAllTables = async (args, cb, headers) => {
         };
     }
 
-    // If here - user has provided correct credentials and is authorized
-    console.log("User Authorized")
-
     // Try get data from DB
     try {
         // Get IP address

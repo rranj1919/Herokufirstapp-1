@@ -80,25 +80,24 @@ router.get('/get', auth, async (req, res) => {
     // Check if object param is "all" or undefined - then query all tables
     if(object === "all" || !object) {
         try{
-            console.log('Getting all tables');
             const tableQuery = await client.query(`SELECT table_name
                                                 FROM information_schema.tables
                                                 WHERE table_schema='${schema}'
                                                 AND table_type='BASE TABLE'
                                                 AND table_name NOT LIKE '_hc%' AND table_name NOT LIKE '_sf%' AND table_name NOT LIKE '_tr%'`);
             const tableArray = tableQuery.rows;
-            console.log(tableArray);
+            console.log('Getting ' + tableArray.length + ' tables');
             results = {};
             
             // Loop through all tables and query them - save in results obj
             for(const table of tableArray) {
-                console.log('Querying: ', table.table_name);
+                //console.log('Querying: ', table.table_name);
                 const fields = await client.query(`SELECT column_name 
                                     FROM information_schema.columns 
                                     WHERE table_schema = '${schema}'
                                     AND table_name = '${table.table_name}'`);
                 let whereDate = createWhereClause(fields.rows, fromDate, toDate);
-                console.log("WHERE: ", whereDate);
+                //console.log("WHERE: ", whereDate);
                 let result = await client.query(`SELECT * FROM ${schema}.${table.table_name} ${whereDate}`);
                 if(result.rows.length > 0) {
                     results[table.table_name] = result.rows;

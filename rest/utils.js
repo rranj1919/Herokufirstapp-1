@@ -7,6 +7,7 @@ const createWhereClause = async (object, fromDate, toDate) => {
                                     FROM information_schema.columns 
                                     WHERE table_schema = 'salesforce'
                                     AND table_name = '${object}'`);
+    client.release();
     if (fields.rows.some(field => field.column_name === 'systemmodstamp')) {
         console.log("has systemmodstamp");
         dateField = 'systemmodstamp';

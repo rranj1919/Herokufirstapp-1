@@ -115,7 +115,7 @@ router.get('/get', auth, async (req, res) => {
     } else {
         // Else - query specific object
         try {
-            const fields = await client.query(`SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ${object}`);
+            const fields = await client.query(`SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'salesforce.${object}'`);
 
             console.log("FIELDS: ", fields.rows);
             

@@ -82,7 +82,7 @@ router.get('/get', auth, async (req, res) => {
     const client = await pool.connect();
 
     // Try get data from db
-    // Check if object param is all or undefined - else query specific table
+    // Check if object param is all or undefined - then query all tables
     if(object === "all" || !object) {
         try{
             console.log('Getting all tables');
@@ -113,7 +113,12 @@ router.get('/get', auth, async (req, res) => {
         }
         
     } else {
+        // Else - query specific object
         try {
+            const fields = await client.query(`SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = salesforce.${object}`);
+
+            console.log("FIELDS: ", fields.rows);
+            
             const result = await client.query(`SELECT * FROM salesforce.${object} ${whereDate}`);
             client.release();
     

@@ -120,7 +120,13 @@ router.get('/get', auth, async (req, res) => {
                                             WHERE table_schema = 'salesforce'
                                             AND table_name = '${object}'`);
 
-            console.log("FIELDS: ", fields);
+            if (fields.rows.some(field => field.column_name === 'systemmodstamp')) {
+                console.log("has systemmodstamp")
+            } else if (fields.rows.some(field => field.column_name === 'lastmodifieddate')) {
+                console.log("has lastmodifieddate")
+            } else {
+                console.log("createddate")
+            }
             
             const result = await client.query(`SELECT * FROM salesforce.${object} ${whereDate}`);
             client.release();

@@ -117,7 +117,7 @@ router.get('/get', auth, async (req, res) => {
         try {
             const fields = await client.query(`SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'salesforce.${object}'`);
 
-            console.log("FIELDS: ", fields.rows);
+            console.log("FIELDS: ", fields);
             
             const result = await client.query(`SELECT * FROM salesforce.${object} ${whereDate}`);
             client.release();

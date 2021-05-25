@@ -72,12 +72,12 @@ router.get('/get', auth, async (req, res) => {
     console.log('Object query param: ', object);
 
     // If there is to or from query params for date - create necessary WHERE clause
-    var whereDate = ''
-    if(toDate) {
-        whereDate = fromDate ? `WHERE systemmodstamp < '${toDate}' AND systemmodstamp > '${fromDate}'` : `WHERE systemmodstamp < '${toDate}'`;
-    } else if(fromDate) {
-        whereDate = `WHERE systemmodstamp > '${fromDate}'`;
-    }
+    // var whereDate = ''
+    // if(toDate) {
+    //     whereDate = fromDate ? `WHERE systemmodstamp < '${toDate}' AND systemmodstamp > '${fromDate}'` : `WHERE systemmodstamp < '${toDate}'`;
+    // } else if(fromDate) {
+    //     whereDate = `WHERE systemmodstamp > '${fromDate}'`;
+    // }
 
     const client = await pool.connect();
 
@@ -128,7 +128,7 @@ router.get('/get', auth, async (req, res) => {
                 console.log("createddate")
             }
             
-            const result = await client.query(`SELECT * FROM salesforce.${object} ${whereDate}`);
+            const result = await client.query(`SELECT * FROM salesforce.${object}`);
             client.release();
     
             const results = {

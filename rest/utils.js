@@ -1,6 +1,6 @@
 const { pool } = require('../config');
 
-const createWhereClause = (object, fromDate, toDate) => {
+const createWhereClause = async (object, fromDate, toDate) => {
     const client = await pool.connect();
     var dateField;
     const fields = await client.query(`SELECT column_name 

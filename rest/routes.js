@@ -91,6 +91,7 @@ router.get('/get', auth, async (req, res) => {
             for(const table of tableArray) {
                 console.log('Querying: ', table.table_name);
                 let whereDate = createWhereClause(table.table_name, fromDate, toDate);
+                console.log("WHERE CLAUSE: ", whereDate);
                 let result = await client.query(`SELECT * FROM salesforce.${table.table_name} ${whereDate}`);
                 if(result.rows.length > 0) {
                     results[table.table_name] = result.rows;
@@ -109,6 +110,7 @@ router.get('/get', auth, async (req, res) => {
         // Else - query specific object
         try {
             let whereDate = createWhereClause(object, fromDate, toDate);
+            console.log("WHERE CLAUSE: ", whereDate);
             const result = await client.query(`SELECT * FROM salesforce.${object} ${whereDate}`);
             client.release();
     

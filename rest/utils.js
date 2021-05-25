@@ -26,7 +26,6 @@ const createWhereClause = async (object, fromDate, toDate) => {
         whereDate = `WHERE ${dateField} > '${fromDate}'`;
     }
 
-    console.log("WHERE CLAUSE: ", whereDate);
     return whereDate;
 }
 

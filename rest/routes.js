@@ -84,7 +84,8 @@ router.get('/get', auth, async (req, res) => {
             const tableQuery = await client.query(`SELECT table_name
                                                 FROM information_schema.tables
                                                 WHERE table_schema='${schema}'
-                                                AND table_type='BASE TABLE'`);
+                                                AND table_type='BASE TABLE'
+                                                AND table_name NOT LIKE '_hc%'`);
             const tableArray = tableQuery.rows;
 
             results = {};

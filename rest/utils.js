@@ -1,17 +1,10 @@
-const { pool } = require('../config');
+const createWhereClause = (fields, fromDate, toDate) => {
 
-const createWhereClause = async (object, fromDate, toDate) => {
-    const client = await pool.connect();
     var dateField;
-    const fields = await client.query(`SELECT column_name 
-                                    FROM information_schema.columns 
-                                    WHERE table_schema = 'salesforce'
-                                    AND table_name = '${object}'`);
-    client.release();
-    if (fields.rows.some(field => field.column_name === 'systemmodstamp')) {
+    if (fields.some(field => field.column_name === 'systemmodstamp')) {
         console.log("has systemmodstamp");
         dateField = 'systemmodstamp';
-    } else if (fields.rows.some(field => field.column_name === 'lastmodifieddate')) {
+    } else if (fields.some(field => field.column_name === 'lastmodifieddate')) {
         console.log("has lastmodifieddate");
         dateField = 'lastmodifieddate';
     } else {

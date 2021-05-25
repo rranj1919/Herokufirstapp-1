@@ -120,6 +120,8 @@ router.get('/get', auth, async (req, res) => {
                                             WHERE table_schema = 'salesforce'
                                             AND table_name = '${object}'`);
 
+            console.log("FIELDS: ", fields.rows);
+            
             if (fields.rows.some(field => field.column_name === 'systemmodstamp')) {
                 console.log("has systemmodstamp")
             } else if (fields.rows.some(field => field.column_name === 'lastmodifieddate')) {

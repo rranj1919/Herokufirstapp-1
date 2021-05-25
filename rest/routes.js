@@ -87,7 +87,7 @@ router.get('/get', auth, async (req, res) => {
                                                 AND table_type='BASE TABLE'
                                                 AND table_name NOT LIKE '_hc%'`);
             const tableArray = tableQuery.rows;
-
+            console.log(tableArray);
             results = {};
             
             // Loop through all tables and query them - save in results obj

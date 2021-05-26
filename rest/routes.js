@@ -87,9 +87,9 @@ router.get('/get', auth, async (req, res) => {
                                                 AND table_name NOT LIKE '_hc%' AND table_name NOT LIKE '_sf%' AND table_name NOT LIKE '_tr%'`);
             const tableArray = tableQuery.rows;
             console.log('Getting ' + tableArray.length + ' tables');
-            results = {};
             
             // Loop through all tables and query them - save in results obj
+            results = {};
             for(const table of tableArray) {
                 //console.log('Querying: ', table.table_name);
                 const fields = await client.query(`SELECT column_name 
@@ -120,9 +120,9 @@ router.get('/get', auth, async (req, res) => {
                                     WHERE table_schema = '${schema}'
                                     AND table_name = '${object}'`);
             let whereDate = createWhereClause(fields.rows, fromDate, toDate);
-            console.log("WHERE: ", whereDate);
+            //console.log("WHERE: ", whereDate);
             const result = await client.query(`SELECT * FROM ${schema}.${object} ${whereDate}`);
-            
+
             client.release();
     
             const results = {

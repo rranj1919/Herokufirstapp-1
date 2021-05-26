@@ -8,7 +8,7 @@ const createWhereClause = (fields, fromDate, toDate) => {
     } else {
         dateField = 'createddate';
     }
-    // If there is to or from query params for date - create necessary WHERE clause
+    // If there is to or from query params for date - create WHERE clause
     var whereDate = '';
     if(toDate) {
         whereDate = fromDate ? `WHERE ${dateField} < '${toDate}' AND ${dateField} > '${fromDate}'` : `WHERE ${dateField} < '${toDate}'`;

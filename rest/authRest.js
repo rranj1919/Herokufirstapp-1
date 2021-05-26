@@ -1,7 +1,7 @@
 // Authorize request middleware - used in REST routes
 module.exports = function(req, res, next) {
     console.log('New REST request');
-    console.log('REQUEST HEADERS: ', req.headers);
+    // console.log('REQUEST HEADERS: ', req.headers);
     /*
     // Try authorize user
     try {

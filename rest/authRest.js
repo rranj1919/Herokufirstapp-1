@@ -5,7 +5,7 @@ module.exports = function(req, res, next) {
     /*
     // Try authorize user
     try {
-        console.log('Authorizing request from ' + req.header('username') +'...');
+        console.log('Authorizing request from user ' + req.header('username') +'...');
 
         // Check if credentials are missing
         if(!req.header('username') || !req.header('password')) {
@@ -38,10 +38,14 @@ module.exports = function(req, res, next) {
         // ['username', 'password']
         const splitAuthStr = authStr.split(':');
 
+        console.log('Authorizing request from user ' + splitAuthStr[0] +'...');
+
         // (if required) - check credentials with heroku config vars
         if(splitAuthStr[0] == process.env.USERNAME && splitAuthStr[1] == process.env.PASSWORD) {
+            console.log("Request Authorized")
             next();
         } else {
+            console.log('Unauthorized request');
             res.status(401).json({ msg: 'Unauthorized request' });
         }
     } catch(err) {

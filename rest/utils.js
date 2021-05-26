@@ -1,5 +1,5 @@
+// Method that creates and returns a where clause as a string for a SQL query
 const createWhereClause = (fields, fromDate, toDate) => {
-
     var dateField;
     if (fields.some(field => field.column_name === 'systemmodstamp')) {
         dateField = 'systemmodstamp';

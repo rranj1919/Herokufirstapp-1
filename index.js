@@ -21,7 +21,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Set HTTP header security in responses with helmet
+// Setup HTTP header security in responses with helmet
 app.use(helmet());
 
 // Root handler

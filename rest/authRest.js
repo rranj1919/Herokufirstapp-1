@@ -1,6 +1,7 @@
 // Authorize request middleware - used in REST routes
 module.exports = function(req, res, next) {
     console.log('New REST request');
+    console.log('REQUEST HEADERS: ', req.headers);
     // Try authorize user
     try {
         console.log('Authorizing request from ' + req.header('username') +'...');
@@ -28,7 +29,7 @@ module.exports = function(req, res, next) {
     /*
     // Check base64 encoded 'Authorization' header
     try {
-        // Add .slice(6) to remove postman's 'Basic ' in begining of auth header
+        // Add .slice(6) to remove 'Basic ' in begining of auth header
         const buff = Buffer.from(req.header('Authorization').slice(6), 'base64');
         const authStr = buff.toString('utf-8');
 

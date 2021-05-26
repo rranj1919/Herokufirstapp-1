@@ -122,6 +122,7 @@ router.get('/get', auth, async (req, res) => {
             let whereDate = createWhereClause(fields.rows, fromDate, toDate);
             console.log("WHERE: ", whereDate);
             const result = await client.query(`SELECT * FROM ${schema}.${object} ${whereDate}`);
+            
             client.release();
     
             const results = {

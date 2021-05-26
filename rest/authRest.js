@@ -2,6 +2,7 @@
 module.exports = function(req, res, next) {
     console.log('New REST request');
     console.log('REQUEST HEADERS: ', req.headers);
+    /*
     // Try authorize user
     try {
         console.log('Authorizing request from ' + req.header('username') +'...');
@@ -19,14 +20,15 @@ module.exports = function(req, res, next) {
             
         } else {
             console.log('Unauthorized request');
-            return res.status(401).json({ msg: 'Unauthorized' });
+            return res.status(401).json({ msg: 'Unauthorized request' });
         }
     } catch (err) {
         console.log('Unauthorized request');
-        return res.status(401).json({ msg: 'Unauthorized' });
+        return res.status(401).json({ msg: 'Unauthorized request' });
     }
 
-    /*
+    */
+
     // Check base64 encoded 'Authorization' header
     try {
         // Add .slice(6) to remove 'Basic ' in begining of auth header
@@ -40,11 +42,11 @@ module.exports = function(req, res, next) {
         if(splitAuthStr[0] == process.env.USERNAME && splitAuthStr[1] == process.env.PASSWORD) {
             next();
         } else {
-            res.status(401).json({ msg: 'Unauthorized' });
+            res.status(401).json({ msg: 'Unauthorized request' });
         }
     } catch(err) {
-        console.log('No Encoded Authorization Header');
-        // res.status(401).json({ msg: 'Unauthorized' });
+        console.log('Unauthorized request');
+        res.status(401).json({ msg: 'Unauthorized request' });
     }
-    */
+    
 }

@@ -2,7 +2,7 @@
 module.exports = function(req, res, next) {
     console.log('New REST request');
     // console.log('REQUEST HEADERS: ', req.headers);
-    /*
+    
     // Try authorize user
     try {
         console.log('Authorizing request from user ' + req.header('username') +'...');
@@ -27,8 +27,7 @@ module.exports = function(req, res, next) {
         return res.status(401).json({ msg: 'Unauthorized request' });
     }
 
-    */
-
+    /*
     // Check base64 encoded 'Authorization' header
     try {
         // Add .slice(6) to remove 'Basic ' in begining of auth header
@@ -52,5 +51,5 @@ module.exports = function(req, res, next) {
         console.log('Unauthorized request');
         res.status(401).json({ msg: 'Unauthorized request' });
     }
-    
+    */
 }

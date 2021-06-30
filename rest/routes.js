@@ -66,11 +66,11 @@ router.get('/getAllTables', auth, async (req, res) => {
 // @route   GET api/rest/get
 // @desc    Get all or specific table based on query paramters e.g. /api/rest/get?object=ObjName&from=2021-01-01&to=2021-01-14
 // @access  Private 
-router.get('/get', auth, async (req, res) => {
+router.get('/get', auth, async (req, res) => { 
     const object = req.query.object;
     const toDate = req.query.to;
     const fromDate = req.query.from;
-    const schema = req.query.schema ? req.query.schema : 'servicepoc';
+    const schema = req.query.schema ? req.query.schema : 'salesforce';
     console.log('Object: ', object);
     console.log('Schema: ', schema);
 

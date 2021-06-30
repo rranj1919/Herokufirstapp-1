@@ -6,7 +6,8 @@ module.exports = function(req, res, next) {
     // Try authorize user
     try {
         console.log('Authorizing request from user ' + req.header('username') +'...'+ req.header('password'));
-
+        console.log('Usernameorg>>>'+process.env.USERNAME);
+        console.log('passwordorg>>>'+process.env.PASSWORD);
         // Check if credentials are missing
         if(!req.header('username') || !req.header('password')) {
             console.log('Unauthorized request');

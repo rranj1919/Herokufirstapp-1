@@ -3,7 +3,7 @@ const soap = require('soap');
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const { getAllTables, getTableByName } = require('./soap/operations');
-var usersRouter = require('./routes/users');
+
 // Init express app
 const app = express();
 
@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 
 // Setup rest route
 app.use('/api/rest', require('./rest/routes'));
-app.use('/users', usersRouter);
+
 // Heroku set port dynamically or default 5000
 const PORT = process.env.PORT || 5000;
 

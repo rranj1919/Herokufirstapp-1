@@ -10,7 +10,5 @@ const pool = new Pool({
 });
 
 module.exports = {
-    pool,
-    secretKey: "Shashangka Shekhar",
-    algorithm: 'HS256', //default: HS256
+    pool
 }

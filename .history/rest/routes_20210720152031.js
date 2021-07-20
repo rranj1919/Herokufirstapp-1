@@ -1,30 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const authRest = require('./authRest');
-const auth = require()
+const auth = require('./authRest');
 const { pool } = require('../config');
 const { createWhereClause } = require('./utils');
 
 // @route   GET api/rest/get/:tableName
 // @desc    Get table (object) by name
 // @access  Private
-
-router.post('/login', auth, async (req, res) => {
-
-let token = jwt.sign(userdata, global.config.secretKey, {
-        algorithm: global.config.algorithm,
-        expiresIn: '1m'
-        });
-        
-        res.status(200).json({
-        message: 'Login Successful',
-        jwtoken: token
-        });
-
-});
-
-
-
 router.get('/get/:tableName', auth, async (req, res) => {
     const { tableName } = req.params;
 
